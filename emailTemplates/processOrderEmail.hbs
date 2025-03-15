@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Order Pickup Notification</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        color: #333;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #0056b3;
+        text-align: center;
+      }
+      p {
+        margin: 10px 0;
+      }
+      .details {
+        background: #f9f9f9;
+        padding: 10px;
+        border-left: 5px solid #0056b3;
+        margin: 10px 0;
+      }
+      .footer {
+        margin-top: 20px;
+        text-align: left;
+        font-size: 0.9em;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <p>Dear <strong>{{studentFullName}}</strong>,</p>
+      <p>
+        We are pleased to inform you that your order has arrived at the school
+        and is ready for pickup. Please find your order details below:
+      </p>
+
+      <div class="details">
+        <p><strong>Item Name:</strong> {{itemName}}</p>
+        <p><strong>Tracking ID:</strong> {{trackingID}}</p>
+        <p>
+          <strong>Specifications:</strong>
+          {{itemSpecifications}}
+        </p>
+        <p>
+          <strong>Reason for Order:</strong> {{orderReason}}
+        </p>
+        <p>
+          <strong>Number of Items:</strong> {{numberOfItems}}
+        </p>
+      </div>
+
+      <p>
+        You can pick up your order at the designated location:
+      </p>
+      <p><strong>Pickup Location:</strong> Welfare Office</p>
+      <p><strong>Pickup Time:</strong> 9:00 AM - 4:00 PM (Monday to Friday)</p>
+
+      <p>
+        If you have any questions, feel free to contact us at
+        <a href="mailto:studentaffairs@lmu.edu.ng">studentaffairs@lmu.edu.ng</a>.
+      </p>
+
+      <p>Thank you, and we look forward to seeing you soon!</p>
+
+      <div class="footer">
+        <p>Best Regards,</p>
+        <p><strong>LMU Welfare Office</strong></p>
+        <p>Landmark University</p>
+      </div>
+    </div>
+  </body>
+</html>

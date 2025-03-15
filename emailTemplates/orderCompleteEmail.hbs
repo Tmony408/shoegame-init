@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Order Completion Notification</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        color: #333;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #28a745;
+        text-align: center;
+      }
+      p {
+        margin: 10px 0;
+      }
+      .details {
+        background: #f9f9f9;
+        padding: 10px;
+        border-left: 5px solid #28a745;
+        margin: 10px 0;
+      }
+      .footer {
+        margin-top: 20px;
+        text-align: left;
+        font-size: 0.9em;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Order Successfully Completed</h1>
+      <p>Dear <strong>{{name}}</strong>,</p>
+      <p>
+        We are happy to inform you that your order has been successfully
+        completed. Please find the final details of your order below:
+      </p>
+
+      <div class="details">
+        <p><strong>Item Name:</strong> {{itemName}}</p>
+        <p><strong>Tracking ID:</strong> {{trackingID}}</p>
+        <p>
+          <strong>Specifications:</strong>
+          {{itemSpecifications}}
+        </p>
+        <p>
+          <strong>Reason for Order:</strong> {{orderReason}}
+        </p>
+        <p>
+          <strong>Number of Items:</strong> {{numberOfItems}}
+        </p>
+      </div>
+
+      <p>
+        Thank you for choosing our service. If you have any further requests or
+        feedback, please feel free to contact us at
+        <a href="mailto:studentaffairs@lmu.edu.ng">studentaffairs@lmu.edu.ng</a>.
+      </p>
+
+      <p>We hope to serve you again soon!</p>
+
+      <div class="footer">
+        <p>Best Regards,</p>
+        <p><strong>Student Affairs Office</strong></p>
+        <p>Landmark University</p>
+      </div>
+    </div>
+  </body>
+</html>

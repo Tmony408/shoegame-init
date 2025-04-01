@@ -128,6 +128,18 @@ module.exports = (server) => {
             io.to(roomId).emit('updateRoom', { players: room.players, spectators: rooms[roomId].spectators });
         });
 
+
+
+        socket.on('status', async ({ roomId }) => {
+            const room = await Room.findOne({ roomId });
+
+            if (!room) {
+                socket.emit('error', { message: 'Room not found!' });
+                return;
+            }
+            io.to(roomId).emit('currentstatus', {room: JSON.stringify(room)});
+        });
+
         // **DISCONNECT & RECONNECT**
         socket.on('disconnect', async () => {
             console.log(`${socket.person.username} disconnected`);

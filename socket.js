@@ -132,13 +132,14 @@ module.exports = (server) => {
 
         socket.on('status', async ({ roomId }) => {
             try {
+                console.log("dammy askking for room")
                 const room = await Room.findOne({ roomId });
         
                 if (!room) {
                     socket.emit('error', { message: 'Room not found!' });
                     return;
                 }
-        console.log(room)
+        console.log("i am responding to dammy",room)
                 // Emit room object directly (no need for JSON.stringify)
                 io.to(roomId).emit('currentstatus', { room });
             } catch (error) {

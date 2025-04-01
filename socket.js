@@ -138,7 +138,7 @@ module.exports = (server) => {
                     socket.emit('error', { message: 'Room not found!' });
                     return;
                 }
-        
+        console.log(room)
                 // Emit room object directly (no need for JSON.stringify)
                 io.to(roomId).emit('currentstatus', { room });
             } catch (error) {

@@ -131,15 +131,22 @@ module.exports = (server) => {
 
 
         socket.on('status', async ({ roomId }) => {
-            const room = await Room.findOne({ roomId });
-
-            if (!room) {
-                socket.emit('error', { message: 'Room not found!' });
-                return;
+            try {
+                const room = await Room.findOne({ roomId });
+        
+                if (!room) {
+                    socket.emit('error', { message: 'Room not found!' });
+                    return;
+                }
+        
+                // Emit room object directly (no need for JSON.stringify)
+                io.to(roomId).emit('currentstatus', { room });
+            } catch (error) {
+                console.error('Error fetching room:', error);
+                socket.emit('error', { message: 'An error occurred while fetching room data.' });
             }
-            io.to(roomId).emit('currentstatus', {room: JSON.stringify(room)});
         });
-
+        
         // **DISCONNECT & RECONNECT**
         socket.on('disconnect', async () => {
             console.log(`${socket.person.username} disconnected`);

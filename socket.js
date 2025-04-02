@@ -42,7 +42,7 @@ module.exports = (server) => {
                 messages: [{ user: socket.person.username, message: "Welcome you all to this game" }],
                 questions: questions.map(q => q._id),
                 responses: [],
-                players:[person],
+                players: [person],
                 persons: [{ person: person._id, role: "player", color }]
             });
             // newRoom.players.push({ person: person._id, role: "player", color })
@@ -75,12 +75,12 @@ module.exports = (server) => {
                 room.persons.push({ person: socket.person.id, role: "spectator", color: shoeColor });
                 // rooms[roomId].spectators.push(socket.person);
             }
-            
+
             await room.save();
 
-           players = room.persons.filter(p => p.role === "player")
-           const spectators = room.persons.filter(p => p.role === "spectator")
-           console.log(players)
+            players = room.persons.filter(p => p.role === "player")
+            const spectators = room.persons.filter(p => p.role === "spectator")
+            console.log(players)
             socket.join(roomId);
             console.log(rooms)
             io.to(roomId).emit('updateRoom', { players: players, spectators: spectators });
@@ -134,20 +134,20 @@ module.exports = (server) => {
             try {
                 console.log("dammy askking for room")
                 const room = await Room.findOne({ roomId });
-        
+
                 if (!room) {
                     socket.emit('error', { message: 'Room not found!' });
                     return;
                 }
-        console.log("i am responding to dammy",room)
+                console.log("i am responding to dammy", room)
                 // Emit room object directly (no need for JSON.stringify)
-                io.to(roomId).emit('currentstatus', { room });
+                io.to(roomId).emit('currentstatus', { message: "I love dammy, from moyin"});
             } catch (error) {
                 console.error('Error fetching room:', error);
                 socket.emit('error', { message: 'An error occurred while fetching room data.' });
             }
         });
-        
+
         // **DISCONNECT & RECONNECT**
         socket.on('disconnect', async () => {
             console.log(`${socket.person.username} disconnected`);

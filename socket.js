@@ -143,9 +143,9 @@ module.exports = (server) => {
                 const answer = socket.rooms.has(roomId)
                 console.log("is he in the room", answer)
 
-                socket.join(roomId);
+                // socket.join(roomId);
                 // Emit room object directly (no need for JSON.stringify)
-                io.to(roomId).emit('currentstatus', { message: "I love dammy, from moyin"});
+                io.emit('currentstatus', { message: "I love dammy, from moyin"});
             } catch (error) {
                 console.error('Error fetching room:', error);
                 socket.emit('error', { message: 'An error occurred while fetching room data.' });

@@ -140,6 +140,10 @@ module.exports = (server) => {
                     return;
                 }
                 console.log("i am responding to dammy", room)
+                const answer = socket.rooms.has(roomId)
+                console.log("is he in the room", answer)
+
+                socket.join(roomId);
                 // Emit room object directly (no need for JSON.stringify)
                 io.to(roomId).emit('currentstatus', { message: "I love dammy, from moyin"});
             } catch (error) {

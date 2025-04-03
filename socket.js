@@ -50,7 +50,7 @@ module.exports = (server) => {
             console.log(newRoom)
             rooms[roomId] = { players: [socket.person], spectators: [], messages: [newRoom.messages[0]], color, questions };
             socket.join(roomId);
-            socket.emit('roomCreated', { roomId, password, id:socket.id });
+            socket.emit('roomCreated', { roomId, password, id: socket.id });
         });
 
         // **JOIN ROOM**
@@ -61,7 +61,7 @@ module.exports = (server) => {
                 socket.emit('error', { message: 'Room not found!' });
                 return;
             }
-console.log(password)
+            console.log(password)
             if (!room.comparePassword(password)) {
                 socket.emit('error', { message: 'Incorrect password!' });
                 return;
@@ -135,7 +135,10 @@ console.log(password)
         socket.on('status', async ({ roomId }) => {
             try {
                 console.log("dammy askking for room")
-                const room = await Room.findOne({ roomId }).populate('persons.person', "questions");
+                const room = await Room.findOne({ roomId })
+                    .populate('persons.person') // Populate persons.person
+                    .populate('questions'); // Populate questions in the room
+
 
                 if (!room) {
                     socket.emit('error', { message: 'Room not found!' });
@@ -152,7 +155,7 @@ console.log(password)
                 // }
                 socket.join(roomId);
                 console.log(room)
-                io.emit('currentstatus', { room});
+                io.emit('currentstatus', { room });
             } catch (error) {
                 console.error('Error fetching room:', error);
                 io.to(roomId).emit('error', { message: 'An error occurred while fetching room data.' });

@@ -50,7 +50,7 @@ module.exports = (server) => {
             console.log(newRoom)
             rooms[roomId] = { players: [socket.person], spectators: [], messages: [newRoom.messages[0]], color, questions };
             socket.join(roomId);
-            socket.emit('roomCreated', { roomId, password });
+            socket.emit('roomCreated', { roomId, password, id:socket.id });
         });
 
         // **JOIN ROOM**
@@ -148,7 +148,7 @@ module.exports = (server) => {
                     io.to(roomId).emit('currentstatus', { message: "I love dammy, from moyin in the room" });
                 } else {
                     console.log("is he in the room", answer)
-                    io.emit('currentstatus', { message: "I love dammy, from moyin, outside the room" });
+                    io.emit('currentstatus', { message: "I love dammy, from moyin, outside the room"+ socket.id });
                 }
                 // socket.join(roomId);
                 // Emit room object directly (no need for JSON.stringify)

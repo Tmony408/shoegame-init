@@ -83,7 +83,8 @@ module.exports = (server) => {
             console.log(players)
             socket.join(roomId);
             console.log(rooms)
-            console.log(socket.person.username+" Joined the room")
+            console.log(socket.person.username + " Joined the room")
+            socket.emit("userJoined", { message: "user Joined" })
             io.to(roomId).emit('updateRoom', { players: players, spectators: spectators });
         });
 
@@ -142,14 +143,19 @@ module.exports = (server) => {
                 }
                 console.log("i am responding to dammy", room)
                 const answer = socket.rooms.has(roomId)
-                console.log("is he in the room", answer)
-
-                socket.join(roomId);
+                if (answer) {
+                    console.log("is he in the room", answer)
+                    io.to(roomId).emit('currentstatus', { message: "I love dammy, from moyin in the room" });
+                } else {
+                    console.log("is he in the room", answer)
+                    io.emit('currentstatus', { message: "I love dammy, from moyin, outside the room" });
+                }
+                // socket.join(roomId);
                 // Emit room object directly (no need for JSON.stringify)
-                io.emit('currentstatus', { message: "I love dammy, from moyin"});
+
             } catch (error) {
                 console.error('Error fetching room:', error);
-                socket.to(roomId).emit('error', { message: 'An error occurred while fetching room data.' });
+                io.to(roomId).emit('error', { message: 'An error occurred while fetching room data.' });
             }
         });
 

@@ -61,7 +61,7 @@ module.exports = (server) => {
                 socket.emit('error', { message: 'Room not found!' });
                 return;
             }
-
+console.log(password)
             if (!room.comparePassword(password)) {
                 socket.emit('error', { message: 'Incorrect password!' });
                 return;

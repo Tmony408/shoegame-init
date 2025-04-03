@@ -135,24 +135,24 @@ console.log(password)
         socket.on('status', async ({ roomId }) => {
             try {
                 console.log("dammy askking for room")
-                const room = await Room.findOne({ roomId });
+                const room = await Room.findOne({ roomId }).populate('persons.person', "questions");
 
                 if (!room) {
                     socket.emit('error', { message: 'Room not found!' });
                     return;
                 }
                 console.log("i am responding to dammy", room)
-                const answer = socket.rooms.has(roomId)
-                if (answer) {
-                    console.log("is he in the room", answer)
-                    io.to(roomId).emit('currentstatus', { message: "I love dammy, from moyin in the room" });
-                } else {
-                    console.log("is he in the room", answer)
-                    io.emit('currentstatus', { message: "I love dammy, from moyin, outside the room"+ socket.id });
-                }
-                // socket.join(roomId);
-                // Emit room object directly (no need for JSON.stringify)
-
+                // const answer = socket.rooms.has(roomId)
+                // if (answer) {
+                //     console.log("is he in the room", answer)
+                //     io.to(roomId).emit('currentstatus', { message: "I love dammy, from moyin in the room" });
+                // } else {
+                //     console.log("is he in the room", answer)
+                //     io.emit('currentstatus', { message: "I love dammy, from moyin, outside the room"+ socket.id });
+                // }
+                socket.join(roomId);
+                console.log(room)
+                io.emit('currentstatus', { room});
             } catch (error) {
                 console.error('Error fetching room:', error);
                 io.to(roomId).emit('error', { message: 'An error occurred while fetching room data.' });

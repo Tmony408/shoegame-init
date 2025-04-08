@@ -7,6 +7,7 @@ const Person = require("./Models/Person")
 const { generateUniqueID } = require("./configs/utils");
 const Question = require('./Models/Question');
 const mongoose = require("mongoose")
+const {getRoom} = require("./utils/room")
 
 
 const rooms = {}; // In-memory store of active rooms
@@ -42,7 +43,7 @@ module.exports = (server) => {
                 messages: [{ user: socket.person.username, message: "Welcome you all to this game" }],
                 questions: questions.map(q => q._id),
                 responses: [],
-                players: [person],
+                owner: person._id,
                 persons: [{ person: person._id, role: "player", color }]
             });
             // newRoom.players.push({ person: person._id, role: "player", color })
@@ -61,11 +62,7 @@ module.exports = (server) => {
                 socket.emit('error', { message: 'Room not found!' });
                 return;
             }
-            console.log(password)
-            if (!room.comparePassword(password)) {
-                socket.emit('error', { message: 'Incorrect password!' });
-                return;
-            }
+            
             let players = room.persons.filter(p => p.role === "player")
             if (players.length < 2) {
                 room.persons.push({ person: socket.person.id, role: "player", color: shoeColor });
@@ -78,14 +75,15 @@ module.exports = (server) => {
 
             await room.save();
 
-            players = room.persons.filter(p => p.role === "player")
-            const spectators = room.persons.filter(p => p.role === "spectator")
-            console.log(players)
+            // players = room.persons.filter(p => p.role === "player")
+            // const spectators = room.persons.filter(p => p.role === "spectator")
+            // console.log(players)
             socket.join(roomId);
             console.log(rooms)
             console.log(socket.person.username + " Joined the room")
-            socket.emit("userJoined", { message: "user Joined" })
-            io.to(roomId).emit('updateRoom', { players: players, spectators: spectators });
+            socket.emit("userJoined", { message: "welcome to the room" })
+            socket.broadcast.to(roomId).emit("userJoined", {message: `${socket.person.username} joined the room`})
+            io.to(roomId).emit('status', { room });
         });
 
         // **START GAME - SERVER SENDS 5 RANDOM QUESTIONS**
@@ -132,48 +130,67 @@ module.exports = (server) => {
 
 
 
-        socket.on('status', async ({ roomId }) => {
-            try {
-                console.log("dammy askking for room")
-                const room = await Room.findOne({ roomId })
-                    .populate('persons.person') // Populate persons.person
-                    .populate('questions'); // Populate questions in the room
+        // socket.on('status', async ({ roomId }) => {
+        //     try {
+        //         console.log("dammy askking for room")
+        //         const room = await Room.findOne({ roomId })
+        //             .populate('persons.person') // Populate persons.person
+        //             .populate('questions'); // Populate questions in the room
 
 
-                if (!room) {
-                    socket.emit('error', { message: 'Room not found!' });
-                    return;
-                }
-                console.log("i am responding to dammy", room)
-                // const answer = socket.rooms.has(roomId)
-                // if (answer) {
-                //     console.log("is he in the room", answer)
-                //     io.to(roomId).emit('currentstatus', { message: "I love dammy, from moyin in the room" });
-                // } else {
-                //     console.log("is he in the room", answer)
-                //     io.emit('currentstatus', { message: "I love dammy, from moyin, outside the room"+ socket.id });
-                // }
-                socket.join(roomId);
-                console.log(room)
-                io.emit('currentstatus', { room });
-            } catch (error) {
-                console.error('Error fetching room:', error);
-                io.to(roomId).emit('error', { message: 'An error occurred while fetching room data.' });
-            }
-        });
+        //         if (!room) {
+        //             socket.emit('error', { message: 'Room not found!' });
+        //             return;
+        //         }
+        //         console.log("i am responding to dammy", room)
+        //         // const answer = socket.rooms.has(roomId)
+        //         // if (answer) {
+        //         //     console.log("is he in the room", answer)
+        //         //     io.to(roomId).emit('currentstatus', { message: "I love dammy, from moyin in the room" });
+        //         // } else {
+        //         //     console.log("is he in the room", answer)
+        //         //     io.emit('currentstatus', { message: "I love dammy, from moyin, outside the room"+ socket.id });
+        //         // }
+        //         socket.join(roomId);
+        //         console.log(room)
+        //         io.emit('currentstatus', { room });
+        //     } catch (error) {
+        //         console.error('Error fetching room:', error);
+        //         io.to(roomId).emit('error', { message: 'An error occurred while fetching room data.' });
+        //     }
+        // });
 
         // **DISCONNECT & RECONNECT**
         socket.on('disconnect', async () => {
             console.log(`${socket.person.username} disconnected`);
 
-            for (const roomId in rooms) {
-                rooms[roomId].players = rooms[roomId].players.filter(p => p.id !== socket.person.id);
-                rooms[roomId].spectators = rooms[roomId].spectators.filter(s => s.id !== socket.person.id);
-                await Room.updateOne({ roomId }, { players: rooms[roomId].players });
+        // Find the room the player was in (fetch from the database)
+        const roomId = await getRoom(socket.person.id);
+        if (!roomId) {
+            console.log("Room not found for player");
+            return;
+        }
 
-                io.to(roomId).emit('updateRoom', rooms[roomId]);
-            }
-        });
+        // Get the room data from the database
+        const room = await Room.findOne({ roomId }).populate('persons.person');
+        if (!room) {
+            console.log("Room not found");
+            return;
+        }
+
+        // Remove the player from the room's persons array
+        const playerIndex = room.persons.findIndex(p => p.person._id.toString() === socket.person.id.toString());
+        if (playerIndex !== -1) {
+            room.persons.splice(playerIndex, 1); // Remove player from room
+        }
+
+        // Save the updated room
+        await room.save();
+
+        // Broadcast that the player left the room
+        io.to(roomId).emit('userLeft', { message: `${socket.person.username} left the room` });
+        io.to(roomId).emit('status', room);
+    });
     });
 
     return io;

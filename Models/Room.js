@@ -4,6 +4,10 @@ const bcrypt = require("bcrypt")
 const RoomSchema = new mongoose.Schema({
     roomId: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    owner:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Person"
+    },
     // players: [{
     //     _id: false,
     //     person: {

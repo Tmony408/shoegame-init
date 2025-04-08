@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 const http = require("http")
 //Routes
 const personRoutes = require("./Routes/personRoutes");
+const roomRoutes = require("./Routes/roomRoutes")
 
 
 // app
@@ -36,17 +37,13 @@ app.get("/", (req, res) => {
   });
 
 app.use("/api/person", personRoutes)
+app.use("/api/room", roomRoutes)
 
 
 
 
 
 
-// Middleware for handling 404 (Not Found) errors
-app.use(notFound);
-
-// Middleware for handling errors
-app.use(errorHandler);
 
 
 

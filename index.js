@@ -10,3 +10,9 @@ const server = app.listen(PORT, () => {
 // **Import WebSocket Logic**
 const initSocket = require('./socket');
 const io = initSocket(server);
+
+// Middleware for handling 404 (Not Found) errors
+app.use(notFound);
+
+// Middleware for handling errors
+app.use(errorHandler);

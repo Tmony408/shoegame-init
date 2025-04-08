@@ -1,11 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const {
-  initiateTransaction,
-  verifyTransaction,
-  webhookHandler
-} = require("../Controller/transaction")
+const { verifyRoom } = require("../Controller/room")
 
 // const {
 //     validate,
@@ -20,9 +16,7 @@ const { authMiddleware, isAdmin } = require("../Middlewares/authMiddleware")
 
 
 // Route for creating order
-router.post("/initialize", initiateTransaction);
-router.get("/verify",  verifyTransaction);
-router.post('/webhook', webhookHandler);
+router.post("/verif", authMiddleware, verifyRoom);
 
 
 

@@ -2,7 +2,6 @@ const express = require('express')
 const dotenv = require('dotenv');
 const connectDB = require("./DB/connect");
 const cors = require("cors");
-const { notFound, errorHandler } = require("./Middlewares/errorUtils");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const http = require("http")
